@@ -12,6 +12,20 @@ export default {
     msg: String,
   },
   mounted() {
+    function phoneNumberValidate(str, errorSelectorId) {
+      const phoneNumber = str.replace(/[━.*‐.*―.*－.*\-.*ー.]/gi, '')
+      const pattern = /^(0[5-9]0[0-9]{8}|0[1-9][1-9][0-9]{7})$/
+      if (phoneNumber.match(pattern) === null) {
+        // 電話番号用正規表現に引っかかったらエラーメッセージを表示
+        $(errorSelectorId).show()
+      } else {
+        $(errorSelectorId).hide()
+      }
+      // 全部文字列消したらエラーメッセージ消す
+      if (phoneNumber === '') {
+        $(errorSelectorId).hide()
+      }
+    }
     for (let i = 0; i < 300; i++) {
       $('.list').append(`
       <div>
@@ -22,21 +36,8 @@ export default {
       </div>
       `)
       $(`#input-${i}`).on('keyup', function() {
-        let phoneNumber = String($(`#input-${i}`).val())
-        phoneNumber = phoneNumber.replace(/[━.*‐.*―.*－.*\-.*ー.]/gi, '')
-        var pattern = /^(0[5-9]0[0-9]{8}|0[1-9][1-9][0-9]{7})$/
-        console.log(phoneNumber)
-        var flag = phoneNumber.match(pattern)
-        if (flag === null) {
-          document.querySelector(`#error-${i}`).style.display = 'block'
-        } else {
-          document.querySelector(`#error-${i}`).style.display = 'none'
-        }
-        if (phoneNumber === '') {
-          if (phoneNumber === '') {
-            document.querySelector(`#error-${i}`).style.display = 'none'
-          }
-        }
+        const inputValue = $(`#input-${i}`).val()
+        phoneNumberValidate(inputValue, `#error-${i}`)
       })
     }
   },
